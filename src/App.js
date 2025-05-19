@@ -1,38 +1,29 @@
 import { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, useParams } from 'react-router-dom';
 import './App.css';
 
-function App() {
-  const [cursoSeleccionado, setCursoSeleccionado] = useState('todos');
-  const [cursos, setCursos] = useState([
-    {
-      id: 1,
-      titulo: "Desarrollo Web",
-      descripcion: "Aprende HTML, CSS y JavaScript",
-      categoria: "tecnico",
-      imagen: "https://via.placeholder.com/150"
-    },
-    {
-      id: 2,
-      titulo: "Programación en Python",
-      descripcion: "Fundamentos de programación con Python",
-      categoria: "tecnico",
-      imagen: "https://via.placeholder.com/150"
-    },
-    {
-      id: 3,
-      titulo: "Base de Datos",
-      descripcion: "Diseño y gestión de bases de datos",
-      categoria: "tecnico",
-      imagen: "https://via.placeholder.com/150"
-    }
-  ]);
-  const [nuevoCurso, setNuevoCurso] = useState({
-    titulo: '',
-    descripcion: '',
-    categoria: 'tecnico',
-    imagen: ''
-  });
+// Componente para la página de detalle del curso
+function DetalleCurso({ cursos }) {
+  const { id } = useParams();
+  const curso = cursos.find(c => c.id === parseInt(id));
 
+  if (!curso) {
+    return <div className="detalle-curso">Curso no encontrado</div>;
+  }
+
+  return (
+    <div className="detalle-curso">
+      <h1>{curso.titulo}</h1>
+      <img src={curso.imagen} alt={curso.titulo} />
+      <p>{curso.descripcion}</p>
+      <p>Categoría: {curso.categoria}</p>
+      <Link to="/" className="btn-volver">Volver a la lista</Link>
+    </div>
+  );
+}
+
+// Componente para la página principal
+function PaginaPrincipal({ cursos, setCursos, nuevoCurso, setNuevoCurso, cursoSeleccionado, setCursoSeleccionado }) {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNuevoCurso({
@@ -128,15 +119,66 @@ function App() {
         {/* Grid de cursos */}
         <div className="cursos-grid">
           {cursosAMostrar.map(curso => (
-            <div key={curso.id} className="curso-card">
+            <Link to={`/curso/${curso.id}`} key={curso.id} className="curso-card">
               <img src={curso.imagen} alt={curso.titulo} />
               <h3>{curso.titulo}</h3>
               <p>{curso.descripcion}</p>
-            </div>
+            </Link>
           ))}
         </div>
       </header>
     </div>
+  );
+}
+
+function App() {
+  const [cursoSeleccionado, setCursoSeleccionado] = useState('todos');
+  const [cursos, setCursos] = useState([
+    {
+      id: 1,
+      titulo: "Desarrollo Web",
+      descripcion: "Aprende HTML, CSS y JavaScript",
+      categoria: "tecnico",
+      imagen: "https://via.placeholder.com/150"
+    },
+    {
+      id: 2,
+      titulo: "Programación en Python",
+      descripcion: "Fundamentos de programación con Python",
+      categoria: "tecnico",
+      imagen: "https://via.placeholder.com/150"
+    },
+    {
+      id: 3,
+      titulo: "Base de Datos",
+      descripcion: "Diseño y gestión de bases de datos",
+      categoria: "tecnico",
+      imagen: "https://via.placeholder.com/150"
+    }
+  ]);
+  const [nuevoCurso, setNuevoCurso] = useState({
+    titulo: '',
+    descripcion: '',
+    categoria: 'tecnico',
+    imagen: ''
+  });
+
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={
+          <PaginaPrincipal 
+            cursos={cursos} 
+            setCursos={setCursos} 
+            nuevoCurso={nuevoCurso} 
+            setNuevoCurso={setNuevoCurso} 
+            cursoSeleccionado={cursoSeleccionado} 
+            setCursoSeleccionado={setCursoSeleccionado} 
+          />
+        } />
+        <Route path="/curso/:id" element={<DetalleCurso cursos={cursos} />} />
+      </Routes>
+    </Router>
   );
 }
 
