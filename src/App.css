@@ -207,3 +207,47 @@
     transform: rotate(360deg);
   }
 }
+
+/* Estilos para el formulario de publicaciones */
+.formulario-publicacion {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 600px;
+  margin: 20px auto;
+  color: #282c34;
+}
+
+.formulario-publicacion h2 {
+  color: #282c34;
+  margin-bottom: 20px;
+}
+
+/* Estilos para la lista de publicaciones */
+.publicaciones-lista {
+  width: 90%;
+  max-width: 800px;
+  margin: 30px auto;
+}
+
+.publicacion-card {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  text-align: left;
+  color: #282c34;
+}
+
+.publicacion-card h3 {
+  margin-top: 0;
+  color: #282c34;
+}
+
+.publicacion-meta {
+  font-size: 0.8rem;
+  color: #666;
+  font-style: italic;
+  margin-top: 10px;
+}

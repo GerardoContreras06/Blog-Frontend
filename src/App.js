@@ -6,6 +6,37 @@ import './App.css';
 function DetalleCurso({ cursos }) {
   const { id } = useParams();
   const curso = cursos.find(c => c.id === parseInt(id));
+  const [nuevaPublicacion, setNuevaPublicacion] = useState({
+    titulo: '',
+    descripcion: '',
+    cursoId: parseInt(id),
+    fechaCreacion: new Date().toISOString().split('T')[0]
+  });
+  const [publicaciones, setPublicaciones] = useState([]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNuevaPublicacion({
+      ...nuevaPublicacion,
+      [name]: value
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const publicacionConId = {
+      ...nuevaPublicacion,
+      id: Date.now(),
+      cursoNombre: curso.titulo
+    };
+    setPublicaciones([...publicaciones, publicacionConId]);
+    setNuevaPublicacion({
+      titulo: '',
+      descripcion: '',
+      cursoId: parseInt(id),
+      fechaCreacion: new Date().toISOString().split('T')[0]
+    });
+  };
 
   if (!curso) {
     return <div className="detalle-curso">Curso no encontrado</div>;
@@ -17,6 +48,72 @@ function DetalleCurso({ cursos }) {
       <img src={curso.imagen} alt={curso.titulo} />
       <p>{curso.descripcion}</p>
       <p>Categoría: {curso.categoria}</p>
+      
+      {/* Formulario para crear publicaciones */}
+      <div className="formulario-publicacion">
+        <h2>Crear Nueva Publicación</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="titulo">Título:</label>
+            <input
+              type="text"
+              id="titulo"
+              name="titulo"
+              value={nuevaPublicacion.titulo}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="descripcion">Descripción detallada de la actividad:</label>
+            <textarea
+              id="descripcion"
+              name="descripcion"
+              value={nuevaPublicacion.descripcion}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="cursoId">Curso asociado:</label>
+            <input
+              type="text"
+              id="cursoId"
+              value={curso.titulo}
+              readOnly
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="fechaCreacion">Fecha de creación:</label>
+            <input
+              type="date"
+              id="fechaCreacion"
+              name="fechaCreacion"
+              value={nuevaPublicacion.fechaCreacion}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <button type="submit" className="btn-crear">Crear Publicación</button>
+        </form>
+      </div>
+
+      {/* Lista de publicaciones */}
+      {publicaciones.length > 0 && (
+        <div className="publicaciones-lista">
+          <h2>Publicaciones</h2>
+          {publicaciones.map(pub => (
+            <div key={pub.id} className="publicacion-card">
+              <h3>{pub.titulo}</h3>
+              <p>{pub.descripcion}</p>
+              <p className="publicacion-meta">
+                Curso: {pub.cursoNombre} | Fecha: {pub.fechaCreacion}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+      
       <Link to="/" className="btn-volver">Volver a la lista</Link>
     </div>
   );
